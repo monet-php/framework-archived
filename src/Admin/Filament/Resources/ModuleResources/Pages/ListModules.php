@@ -2,6 +2,7 @@
 
 namespace Monet\Framework\Admin\Filament\Resources\ModuleResources\Pages;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
