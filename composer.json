@@ -1,0 +1,64 @@
+{
+    "name": "monet-php/framework",
+    "description": "A multi-purpose and modular framework built on Laravel.",
+    "keywords": [
+        "monet",
+        "laravel",
+        "framework"
+    ],
+    "homepage": "https://github.com/monet-php/framework",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "ext-pdo_sqlite": "*",
+        "ext-zip": "*",
+        "calebporzio/sushi": "^2.4",
+        "filament/filament": "^2.15",
+        "illuminate/contracts": "^9.27",
+        "marcj/topsort": "^2.0",
+        "spatie/laravel-permission": "^5.5"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.1",
+        "nunomaduro/collision": "^6.3",
+        "orchestra/testbench": "^7.7",
+        "pestphp/pest": "^1.22",
+        "pestphp/pest-plugin-laravel": "^1.2",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Monet\\Framework\\": "src",
+            "Monet\\Framework\\Seeders\\": "database/seeders"
+        },
+        "files": [
+            "helpers/settings.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Monet\\Framework\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Monet\\Framework\\MonetServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
