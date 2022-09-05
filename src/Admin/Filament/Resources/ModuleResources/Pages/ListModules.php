@@ -4,8 +4,8 @@ namespace Monet\Framework\Admin\Filament\Resources\ModuleResources\Pages;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
-use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Actions\Action;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -278,7 +278,7 @@ class ListModules extends ListRecords
     protected function getActions(): array
     {
         return [
-            Action::make('install')
+            \Filament\Pages\Actions\Action::make('install')
                 ->label('Install modules')
                 ->action('installModules')
                 ->form([
