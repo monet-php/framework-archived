@@ -2,13 +2,14 @@
 
 namespace Monet\Framework\Auth\Models;
 
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Monet\Framework\Auth\Contracts\ShouldVerifyEmail;
 use Monet\Framework\Support\Traits\Macroable;
 use Monet\Framework\Transformer\Facades\Transformer;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements ShouldVerifyEmail
+class User extends Authenticatable implements ShouldVerifyEmail, FilamentUser
 {
     use Macroable;
     use HasRoles;
@@ -60,5 +61,10 @@ class User extends Authenticatable implements ShouldVerifyEmail
             'monet.auth.user.model.shouldVerifyEmail',
             config('monet.auth.require_email_verification')
         );
+    }
+
+    public function canAccessFilament(): bool
+    {
+        return $this->hasPermissionTo('view admin');
     }
 }
