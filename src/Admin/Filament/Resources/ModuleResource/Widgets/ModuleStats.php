@@ -1,8 +1,9 @@
 <?php
 
-namespace Monet\Framework\Admin\Filament\Resources\ModuleResources\Widgets;
+namespace Monet\Framework\Admin\Filament\Resources\ModuleResource\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget\Card;
 use Monet\Framework\Module\Facades\Modules;
 
 class ModuleStats extends StatsOverviewWidget
@@ -12,14 +13,14 @@ class ModuleStats extends StatsOverviewWidget
         $filter = 'tableFilters[status][values][0]';
 
         return [
-            StatsOverviewWidget\Card::make(
+            Card::make(
                 'Total modules',
                 number_format(count(Modules::all()))
             )
                 ->url(
                     route('filament.resources.extend/modules.index')
                 ),
-            StatsOverviewWidget\Card::make(
+            Card::make(
                 'Enabled modules',
                 number_format(count(Modules::enabled()))
             )
@@ -31,7 +32,7 @@ class ModuleStats extends StatsOverviewWidget
                         ]
                     )
                 ),
-            StatsOverviewWidget\Card::make(
+            Card::make(
                 'Disabled modules',
                 number_format(count(Modules::disabled()))
             )

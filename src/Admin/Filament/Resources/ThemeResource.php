@@ -1,0 +1,111 @@
+<?php
+
+namespace Monet\Framework\Admin\Filament\Resources;
+
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
+use Illuminate\Database\Eloquent\Model;
+use Monet\Framework\Admin\Filament\Resources\ThemeResource\Pages\ListThemes;
+use Monet\Framework\Admin\Filament\Resources\ThemeResource\Widgets\ThemeStats;
+use Monet\Framework\Theme\Models\Theme;
+use Monet\Framework\Transformer\Facades\Transformer;
+
+class ThemeResource extends Resource
+{
+    protected static ?string $model = Theme::class;
+
+    protected static ?string $slug = 'appearance/themes';
+
+    protected static ?string $navigationGroup = 'Appearance';
+
+    protected static ?string $navigationIcon = 'heroicon-o-color-swatch';
+
+    protected static ?int $navigationSort = -9999;
+
+    public static function table(Table $table): Table
+    {
+        return Transformer::transform(
+            'monet.admin.themes.table',
+            $table
+                ->columns(
+                    Transformer::transform(
+                        'monet.admin.themes.table.columns',
+                        [
+                            TextColumn::make('name')
+                                ->label('Name')
+                                ->sortable()
+                                ->searchable(),
+                            TextColumn::make('description')
+                                ->label('Description')
+                                ->sortable()
+                                ->searchable()
+                                ->wrap(),
+                            BooleanColumn::make('enabled')
+                                ->label('Enabled'),
+                        ]
+                    )
+                )
+                ->filters(
+                    Transformer::transform(
+                        'monet.admin.themes.table.filters',
+                        [
+                            TernaryFilter::make('enabled')
+                                ->label('Enabled'),
+                        ]
+                    )
+                )
+                ->bulkActions(
+                    Transformer::transform(
+                        'monet.admin.themes.table.bulkActions',
+                        [
+                            BulkAction::make('delete')
+                                ->label('Delete selected')
+                                ->color('danger')
+                                ->icon('heroicon-o-trash')
+                                ->requiresConfirmation()
+                                ->action('deleteBulk'),
+                        ]
+                    )
+                )
+        );
+    }
+
+    public static function getPages(): array
+    {
+        return Transformer::transform(
+            'monet.admin.themes.pages',
+            [
+                'index' => ListThemes::route('/'),
+            ]
+        );
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return __(number_format(static::getModel()::count()).' Installed');
+    }
+
+    public static function getWidgets(): array
+    {
+        return Transformer::transform(
+            'monet.admin.themes.widgets',
+            [
+                ThemeStats::class,
+            ]
+        );
+    }
+}

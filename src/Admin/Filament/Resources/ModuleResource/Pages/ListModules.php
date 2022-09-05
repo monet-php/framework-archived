@@ -1,6 +1,6 @@
 <?php
 
-namespace Monet\Framework\Admin\Filament\Resources\ModuleResources\Pages;
+namespace Monet\Framework\Admin\Filament\Resources\ModuleResource\Pages;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Monet\Framework\Admin\Filament\Resources\ModuleResource;
 use Monet\Framework\Module\Facades\Modules;
 use Monet\Framework\Module\Models\Module;
+use Monet\Framework\Transformer\Facades\Transformer;
 
 class ListModules extends ListRecords
 {
@@ -253,50 +254,56 @@ class ListModules extends ListRecords
 
     protected function getTableActions(): array
     {
-        return [
-            Action::make('enable')
-                ->label('Enable')
-                ->hidden(fn(Module $record): bool => $record->enabled)
-                ->icon('heroicon-o-check')
-                ->requiresConfirmation()
-                ->action('enableModule'),
-            Action::make('disable')
-                ->label('Disable')
-                ->hidden(fn(Module $record): bool => $record->disabled)
-                ->icon('heroicon-o-x')
-                ->requiresConfirmation()
-                ->action('disableModule'),
-            Action::make('delete')
-                ->label('Delete')
-                ->color('danger')
-                ->icon('heroicon-o-trash')
-                ->requiresConfirmation()
-                ->action('deleteModule'),
-        ];
+        return Transformer::transform(
+            'monet.admin.modules.list.table.actions',
+            [
+                Action::make('enable')
+                    ->label('Enable')
+                    ->hidden(fn(Module $record): bool => $record->enabled)
+                    ->icon('heroicon-o-check')
+                    ->requiresConfirmation()
+                    ->action('enableModule'),
+                Action::make('disable')
+                    ->label('Disable')
+                    ->hidden(fn(Module $record): bool => $record->disabled)
+                    ->icon('heroicon-o-x')
+                    ->requiresConfirmation()
+                    ->action('disableModule'),
+                Action::make('delete')
+                    ->label('Delete')
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->requiresConfirmation()
+                    ->action('deleteModule'),
+            ]
+        );
     }
 
     protected function getActions(): array
     {
-        return [
-            \Filament\Pages\Actions\Action::make('install')
-                ->label('Install modules')
-                ->action('installModules')
-                ->form([
-                    FileUpload::make('modules')
-                        ->label('Modules')
-                        ->disableLabel()
-                        ->disk('local')
-                        ->directory('modules-tmp')
-                        ->preserveFilenames()
-                        ->multiple()
-                        ->minFiles(1)
-                        ->acceptedFileTypes([
-                            'application/zip',
-                            'application/x-zip-compressed',
-                            'multipart/x-zip',
-                        ]),
-                ]),
-        ];
+        return Transformer::transform(
+            'monet.admin.modules.list.page.actions',
+            [
+                \Filament\Pages\Actions\Action::make('install')
+                    ->label('Install modules')
+                    ->action('installModules')
+                    ->form([
+                        FileUpload::make('modules')
+                            ->label('Modules')
+                            ->disableLabel()
+                            ->disk('local')
+                            ->directory('modules-tmp')
+                            ->preserveFilenames()
+                            ->multiple()
+                            ->minFiles(1)
+                            ->acceptedFileTypes([
+                                'application/zip',
+                                'application/x-zip-compressed',
+                                'multipart/x-zip',
+                            ]),
+                    ]),
+            ]
+        );
     }
 
     protected function getHeaderWidgets(): array
