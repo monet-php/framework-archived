@@ -3,6 +3,7 @@
 namespace Monet\Framework;
 
 use Illuminate\Support\AggregateServiceProvider;
+use Monet\Framework\Admin\Providers\AdminServiceProvider;
 use Monet\Framework\Module\Providers\ModulesServiceProvider;
 use Monet\Framework\Settings\Providers\SettingsServiceProvider;
 use Monet\Framework\Support\Filesystem;
@@ -16,6 +17,7 @@ class MonetServiceProvider extends AggregateServiceProvider
         SettingsServiceProvider::class,
         ModulesServiceProvider::class,
         ThemeServiceProvider::class,
+        AdminServiceProvider::class
     ];
 
     public function register(): void
