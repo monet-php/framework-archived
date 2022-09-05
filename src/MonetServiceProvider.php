@@ -7,6 +7,7 @@ use Monet\Framework\Admin\Providers\AdminServiceProvider;
 use Monet\Framework\Module\Providers\ModulesServiceProvider;
 use Monet\Framework\Settings\Providers\SettingsServiceProvider;
 use Monet\Framework\Support\Filesystem;
+use Monet\Framework\Theme\Facades\Themes;
 use Monet\Framework\Theme\Providers\ThemeServiceProvider;
 use Monet\Framework\Transformer\Providers\TransformerServiceProvider;
 
@@ -53,13 +54,24 @@ class MonetServiceProvider extends AggregateServiceProvider
                 'config'
             );
         }
+
+        $this->enableIntroduction();
     }
 
-    public function provides()
+    public function provides(): array
     {
         return [
             Filesystem::class,
             ...parent::provides(),
         ];
+    }
+
+    protected function enableIntroduction(): void
+    {
+        if(Themes::enabled() !== null) {
+            return;
+        }
+
+        $this->loadRoutesFrom(__DIR__.'/../routes/introduction.php');
     }
 }
