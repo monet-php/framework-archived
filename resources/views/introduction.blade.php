@@ -1,4 +1,4 @@
-@extends('lcframework::layouts.blank')
+@extends('monet::layouts.blank')
 
 @section('content')
     <div class="container mx-auto px-4">

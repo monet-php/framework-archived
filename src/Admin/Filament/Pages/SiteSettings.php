@@ -202,7 +202,7 @@ class SiteSettings extends Page
                 'app_environment' => config('app.env'),
                 'app_debug' => config('app.debug'),
 
-                'app_require_email_verification' => config('lcframework.auth.require_email_verification'),
+                'app_require_email_verification' => config('monet.auth.require_email_verification'),
 
                 'mail_host' => config('mail.mailers.smtp.host'),
                 'mail_username' => config('mail.mailers.smtp.username'),
