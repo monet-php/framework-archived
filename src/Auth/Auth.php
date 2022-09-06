@@ -15,11 +15,12 @@ class Auth
 
     public static function login(
         array $credentials,
-        bool $updatePasswordConfirmed = true
-    ): void {
+        bool  $updatePasswordConfirmed = true
+    ): void
+    {
         $authQuery = [
-            function ($query) {
-                $query->orWhere('email', '=', 'email');
+            function ($query) use ($credentials) {
+                $query->orWhere('email', '=', $credentials['email']);
             },
         ];
 
@@ -31,8 +32,8 @@ class Auth
             $username = $credentials[$usernameIdentifier] ?? $credentials['email'];
 
             $authQuery = [
-                function ($query) use ($usernameIdentifier, $username) {
-                    $query->orWhere('email', '=', 'email')
+                function ($query) use ($usernameIdentifier, $credentials, $username) {
+                    $query->orWhere('email', '=', $credentials['email'])
                         ->orWhere($usernameIdentifier, '=', $username);
                 },
             ];
@@ -42,7 +43,7 @@ class Auth
 
         $remember = $credentials['remember'] ?? false;
 
-        if (! Filament::auth()->attempt($authQuery, $remember)) {
+        if (!Filament::auth()->attempt($authQuery, $remember)) {
             $validationErrorKey = $usernameEnabled ?
                 'monet.auth.errors.emailOrUsername' :
                 'monet.auth.errors.email';
@@ -59,15 +60,16 @@ class Auth
 
     public static function register(
         array $attributes,
-        bool $loginAfter = true,
-        bool $silently = false
-    ): User {
+        bool  $loginAfter = true,
+        bool  $silently = false
+    ): User
+    {
         $user = User::query()
             ->create($attributes);
 
         $user->assignRole(Role::findById(1));
 
-        if (! $silently) {
+        if (!$silently) {
             event(new Registered($user));
         }
 
