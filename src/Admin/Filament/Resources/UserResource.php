@@ -46,7 +46,6 @@ class UserResource extends Resource
                 Card::make()
                     ->schema([
                         TextInput::make(User::getUsernameIdentifierName())
-                            ->label('Username')
                             ->required()
                             ->maxLength(255),
                         TextInput::make('email')
@@ -67,6 +66,7 @@ class UserResource extends Resource
                             ->label('Confirm password')
                             ->password(),
                         MultiSelect::make('roles')
+                            ->label('Roles')
                             ->relationship('roles', 'name')
                             ->saveRelationshipsUsing(function (User $record, $state) {
                                 $record->syncRoles($state);
