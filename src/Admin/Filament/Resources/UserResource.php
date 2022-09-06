@@ -17,7 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
@@ -45,7 +45,7 @@ class UserResource extends Resource
             ->schema([
                 Card::make()
                     ->schema([
-                        TextInput::make('user_id')
+                        TextInput::make(User::getUsernameIdentifierName())
                             ->label('Username')
                             ->required()
                             ->maxLength(255),
@@ -53,16 +53,16 @@ class UserResource extends Resource
                             ->label('Email address')
                             ->required()
                             ->email()
-                            ->unique(User::class, 'email', fn ($record) => $record)
+                            ->unique(User::class, 'email', fn($record) => $record)
                             ->maxLength(255),
                         TextInput::make('password')
                             ->label('Password')
                             ->password()
                             ->dehydrateStateUsing(
-                                fn (?string $state, Closure $get): string => Hash::make($state, ['user_id' => $get('user_id')])
+                                fn(?string $state, Closure $get): string => Hash::make($state, ['user_id' => $get('user_id')])
                             )
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord),
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord),
                         TextInput::make('password_confirmation')
                             ->label('Confirm password')
                             ->password(),
@@ -73,7 +73,7 @@ class UserResource extends Resource
 
                                 if (
                                     $record->user_code === auth()->id() &&
-                                    ! $record->hasPermissionTo('view admin')
+                                    !$record->hasPermissionTo('view admin')
                                 ) {
                                     $record->assignRole(Role::findById(2));
                                 }
@@ -89,7 +89,7 @@ class UserResource extends Resource
                 Card::make()
                     ->schema([
                         Toggle::make('email_verified_at')
-                            ->label('Verified')
+                            ->label('Email verified')
                             ->afterStateHydrated(
                                 function (Toggle $component, $state): void {
                                     $component->state($state !== null);
@@ -102,15 +102,15 @@ class UserResource extends Resource
 
                                 $verified = $record->hasVerifiedEmail();
 
-                                return $state ? ! $verified : $verified;
+                                return $state ? !$verified : $verified;
                             })
-                            ->dehydrateStateUsing(fn (bool $state): ?DateTimeInterface => $state ? now() : null),
+                            ->dehydrateStateUsing(fn(bool $state): ?DateTimeInterface => $state ? now() : null),
                         Placeholder::make('created_at')
-                            ->label('Created')
-                            ->content(fn (?User $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                            ->label('Created at')
+                            ->content(fn(?User $record): string => $record?->created_at?->diffForHumans() ?? '-'),
                         Placeholder::make('update_time')
-                            ->label('Modified')
-                            ->content(fn (?User $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                            ->label('Modified at')
+                            ->content(fn(?User $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
                     ])
                     ->columnSpan(1),
             ])
@@ -132,17 +132,24 @@ class UserResource extends Resource
                     ->label('Email address')
                     ->sortable()
                     ->searchable(),
-                BooleanColumn::make('email_verified_at')
+                BadgeColumn::make('email_verified_at')
                     ->label('Verified')
                     ->sortable()
-                    ->getStateUsing(fn (User $record): bool => $record->hasVerifiedEmail()),
+                    ->enum([
+                        true => 'Verified',
+                        false => 'Unverified'
+                    ])
+                    ->colors([
+                        'success' => true,
+                        'danger' => false
+                    ]),
                 TextColumn::make('created_at')
                     ->label('Created at')
                     ->date()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('updated_at')
-                    ->label('Modified')
+                    ->label('Modified at')
                     ->date()
                     ->sortable()
                     ->searchable(),
@@ -150,7 +157,7 @@ class UserResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make()
-                    ->hidden(fn (User $record): bool => $record->user_code === auth()->id()),
+                    ->hidden(fn(User $record): bool => $record->user_code === auth()->id()),
             ])
             ->filters([
                 TernaryFilter::make('email_verified_at')
