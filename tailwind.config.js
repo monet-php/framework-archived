@@ -19,7 +19,7 @@ module.exports = {
                 warning: colors.amber,
             },
             fontFamily: {
-                sans: [ 'Inter', ...defaultTheme.fontFamily.sans ]
+                sans: [ 'DM Sans', ...defaultTheme.fontFamily.sans ]
             }
         }
     },
