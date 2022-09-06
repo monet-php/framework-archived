@@ -8,10 +8,11 @@ module.exports = {
         './resources/**/*.js',
         './vendor/filament/**/*.blade.php'
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
-                //gray: colors.neutral,
+                gray: colors.neutral,
                 danger: colors.rose,
                 primary: colors.amber,
                 success: colors.green,
