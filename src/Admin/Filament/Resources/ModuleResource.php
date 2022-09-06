@@ -142,6 +142,11 @@ class ModuleResource extends Resource
         );
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'description'];
+    }
+
     public static function getGlobalSearchResultTitle(Model $record): string
     {
         return Transformer::transform(

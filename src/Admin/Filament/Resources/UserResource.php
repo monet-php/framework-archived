@@ -203,6 +203,11 @@ class UserResource extends Resource
             parent::canDelete($record);
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [User::getUsernameIdentifierName(), 'email'];
+    }
+
     public static function getGlobalSearchResultTitle(Model $record): string
     {
         return Transformer::transform(
