@@ -6,7 +6,8 @@ module.exports = {
     content: [
         './resources/**/*.blade.php',
         './resources/**/*.js',
-        './vendor/filament/**/*.blade.php'
+        './vendor/filament/**/*.blade.php',
+        './vendor/awcodes/filament-curator/resources/views/**/*.blade.php'
     ],
     darkMode: 'class',
     theme: {
