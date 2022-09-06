@@ -13,7 +13,7 @@ class Auth
 {
     use Macroable;
 
-    public function login(
+    public static function login(
         array $credentials,
         bool $updatePasswordConfirmed = true
     ): void {
