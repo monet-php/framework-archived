@@ -12,11 +12,11 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                gray: colors.neutral,
+                gray: colors.slate,
                 danger: colors.rose,
-                primary: colors.amber,
-                success: colors.green,
-                warning: colors.amber,
+                primary: colors.sky,
+                success: colors.emerald,
+                warning: colors.orange,
             },
             fontFamily: {
                 sans: [ 'Inter', ...defaultTheme.fontFamily.sans ]
