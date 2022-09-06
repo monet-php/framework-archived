@@ -25,19 +25,17 @@ class AdminServiceProvider extends PluginServiceProvider
     {
         parent::packageBooted();
 
-        $this->app->resolving('filament', function() {
-            Filament::serving(function () {
-                Filament::registerNavigationGroups([
-                    'Users',
-                    'Appearance',
-                    'Extend',
-                    'Administration',
-                ]);
+        Filament::serving(function () {
+            Filament::registerNavigationGroups([
+                'Users',
+                'Appearance',
+                'Extend',
+                'Administration',
+            ]);
 
-                Filament::registerTheme(
-                    mix('css/monet.css', 'monet'),
-                );
-            });
+            Filament::registerTheme(
+                mix('css/monet.css', 'monet'),
+            );
         });
     }
 }
