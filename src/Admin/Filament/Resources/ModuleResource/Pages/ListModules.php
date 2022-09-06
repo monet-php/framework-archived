@@ -22,7 +22,7 @@ class ListModules extends ListRecords
     {
         $reason = null;
 
-        if (!Modules::enable($record->name, $reason)) {
+        if (! Modules::enable($record->name, $reason)) {
             Notification::make()
                 ->danger()
                 ->title(sprintf('Module "%s" has failed to be enabled', $record->name))
@@ -68,7 +68,7 @@ class ListModules extends ListRecords
     {
         $reason = null;
 
-        if (!Modules::delete($record->name, $reason)) {
+        if (! Modules::delete($record->name, $reason)) {
             Notification::make()
                 ->danger()
                 ->title(sprintf('Module "%s" has been unsuccessfully deleted', $record->name))
@@ -101,7 +101,7 @@ class ListModules extends ListRecords
 
             $reason = null;
 
-            if (!Modules::enable($module->name, $reason)) {
+            if (! Modules::enable($module->name, $reason)) {
                 Notification::make()
                     ->danger()
                     ->title(sprintf('Module "%s" has failed to be enabled', $module->name))
@@ -172,7 +172,7 @@ class ListModules extends ListRecords
         foreach ($records as $module) {
             $reason = null;
 
-            if (!Modules::delete($module->name, $reason)) {
+            if (! Modules::delete($module->name, $reason)) {
                 Notification::make()
                     ->danger()
                     ->title(
@@ -259,13 +259,13 @@ class ListModules extends ListRecords
             [
                 Action::make('enable')
                     ->label('Enable')
-                    ->hidden(fn(Module $record): bool => $record->enabled)
+                    ->hidden(fn (Module $record): bool => $record->enabled)
                     ->icon('heroicon-o-check')
                     ->requiresConfirmation()
                     ->action('enableModule'),
                 Action::make('disable')
                     ->label('Disable')
-                    ->hidden(fn(Module $record): bool => $record->disabled)
+                    ->hidden(fn (Module $record): bool => $record->disabled)
                     ->icon('heroicon-o-x')
                     ->requiresConfirmation()
                     ->action('disableModule'),

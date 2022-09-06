@@ -3,13 +3,14 @@
 namespace Monet\Framework\Auth\Models;
 
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Monet\Framework\Auth\Contracts\ShouldVerifyEmail;
 use Monet\Framework\Support\Traits\Macroable;
 use Monet\Framework\Transformer\Facades\Transformer;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements ShouldVerifyEmail, FilamentUser
+class User extends Authenticatable implements ShouldVerifyEmail, FilamentUser, HasName
 {
     use Macroable;
     use HasRoles;
@@ -55,6 +56,16 @@ class User extends Authenticatable implements ShouldVerifyEmail, FilamentUser
         );
     }
 
+    public static function getUsernameIdentifierName(): string
+    {
+        return 'name';
+    }
+
+    public function getUsernameIdentifier(): string
+    {
+        return $this->{$this->getUsernameIdentifierName()};
+    }
+
     public function shouldVerifyEmail(): bool
     {
         return Transformer::transform(
@@ -66,5 +77,10 @@ class User extends Authenticatable implements ShouldVerifyEmail, FilamentUser
     public function canAccessFilament(): bool
     {
         return $this->hasPermissionTo('view admin');
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->getUsernameIdentifier();
     }
 }

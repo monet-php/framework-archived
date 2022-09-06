@@ -4,6 +4,8 @@ return [
     'auth' => [
         'require_email_verification' => (bool) env('MONET_AUTH_REQUIRE_EMAIL_VERIFICATION', true),
 
+        'allow_username_login' => (bool) env('MONET_AUTH_ALLOW_USERNAME_LOGIN', false),
+
         'routes' => [
             'login' => env('MONET_AUTH_LOGIN_ROUTE', '/login'),
             'register' => env('MONET_AUTH_REGISTER_ROUTE', '/register'),
@@ -15,7 +17,7 @@ return [
             ],
             'email' => [
                 'notice' => env('MONET_AUTH_EMAIL_NOTICE_ROUTE', '/email-verification'),
-                'verify' => env('MONET_AUTH_EMAIL_VERIFY_ROUTE', '/email-verification'),
+                'verify' => env('MONET_AUTH_EMAIL_VERIFY_ROUTE', '/email-verification/{id}/{hash}'),
             ],
         ],
     ],

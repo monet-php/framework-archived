@@ -12,11 +12,11 @@ class AdminServiceProvider extends PluginServiceProvider
     public static string $name = 'monet-admin';
 
     protected array $pages = [
-        SiteSettings::class
+        SiteSettings::class,
     ];
 
     protected array $resources = [
         ModuleResource::class,
-        ThemeResource::class
+        ThemeResource::class,
     ];
 }

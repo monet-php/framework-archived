@@ -4,6 +4,7 @@ namespace Monet\Framework;
 
 use Illuminate\Support\AggregateServiceProvider;
 use Monet\Framework\Admin\Providers\AdminServiceProvider;
+use Monet\Framework\Auth\Providers\AuthServiceProvider;
 use Monet\Framework\Module\Providers\ModulesServiceProvider;
 use Monet\Framework\Settings\Providers\SettingsServiceProvider;
 use Monet\Framework\Support\Filesystem;
@@ -16,9 +17,10 @@ class MonetServiceProvider extends AggregateServiceProvider
     protected $providers = [
         TransformerServiceProvider::class,
         SettingsServiceProvider::class,
+        AuthServiceProvider::class,
         ModulesServiceProvider::class,
         ThemeServiceProvider::class,
-        AdminServiceProvider::class
+        AdminServiceProvider::class,
     ];
 
     public function register(): void
@@ -68,7 +70,7 @@ class MonetServiceProvider extends AggregateServiceProvider
 
     protected function enableIntroduction(): void
     {
-        if(Themes::enabled() !== null) {
+        if (Themes::enabled() !== null) {
             return;
         }
 

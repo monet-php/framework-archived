@@ -1,3 +1,4 @@
+@php use Filament\Facades\Filament; @endphp
 @extends('monet::layouts.blank')
 
 @section('content')
@@ -8,45 +9,53 @@
                     @can('view admin')
                         <li>
                             <a
-                                href="{{route('filament.pages.dashboard')}}"
+                                href="{{Filament::getUrl()}}"
                                 class="font-medium transition hover:text-primary-500 focus:text-primary-700 dark:text-gray-300"
                             >
                                 Administration
                             </a>
                         </li>
                     @endcan
-                    <li>
-                        <form
-                            action="#"
-                            method="post"
-                        >
-                            @csrf
 
-                            <button
-                                type="submit"
+                    @if(Route::has('logout'))
+                        <li>
+                            <form
+                                action="{{route('logout')}}"
+                                method="post"
+                            >
+                                @csrf
+
+                                <button
+                                    type="submit"
+                                    class="font-medium transition hover:text-primary-500 focus:text-primary-700 dark:text-gray-300"
+                                >
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    @endif
+                @else
+                    @if(Route::has('login'))
+                        <li>
+                            <a
+                                href="{{route('login')}}"
                                 class="font-medium transition hover:text-primary-500 focus:text-primary-700 dark:text-gray-300"
                             >
-                                Logout
-                            </button>
-                        </form>
-                    </li>
-                @else
-                    <li>
-                        <a
-                            href="#"
-                            class="font-medium transition hover:text-primary-500 focus:text-primary-700 dark:text-gray-300"
-                        >
-                            Login
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href="#"
-                            class="font-medium transition hover:text-primary-500 focus:text-primary-700 dark:text-gray-300"
-                        >
-                            Register
-                        </a>
-                    </li>
+                                Login
+                            </a>
+                        </li>
+                    @endif
+
+                    @if(Route::has('register'))
+                        <li>
+                            <a
+                                href="{{route('register')}}"
+                                class="font-medium transition hover:text-primary-500 focus:text-primary-700 dark:text-gray-300"
+                            >
+                                Register
+                            </a>
+                        </li>
+                    @endif
                 @endif
             </ul>
         </div>
