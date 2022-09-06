@@ -89,7 +89,7 @@ class UserResource extends Resource
                 Card::make()
                     ->schema([
                         Toggle::make('email_verified_at')
-                            ->label('Email verified')
+                            ->label('Verified')
                             ->afterStateHydrated(
                                 function (Toggle $component, $state): void {
                                     $component->state($state !== null);
