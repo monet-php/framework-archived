@@ -135,6 +135,7 @@ class UserResource extends Resource
                 BadgeColumn::make('email_verified_at')
                     ->label('Verified')
                     ->sortable()
+                    ->hidden(!config('monet.auth.require_email_verification'))
                     ->getStateUsing(fn(User $record): bool => $record->hasVerifiedEmail())
                     ->enum([
                         true => 'Verified',
