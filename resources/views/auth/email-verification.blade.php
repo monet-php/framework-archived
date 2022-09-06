@@ -6,6 +6,6 @@
 
 @section('content')
     <div>
-        @livewire('monet::email-verification')
+        @livewire('monet::auth.email-verification')
     </div>
 @endsection

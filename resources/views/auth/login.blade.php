@@ -6,6 +6,6 @@
 
 @section('content')
     <div>
-        @livewire('monet::login')
+        @livewire('monet::auth.login')
     </div>
 @endsection

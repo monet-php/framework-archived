@@ -6,6 +6,6 @@
 
 @section('content')
     <div>
-        @livewire('monet::password-reset')
+        @livewire('monet::auth.password-reset')
     </div>
 @endsection
