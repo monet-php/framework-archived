@@ -199,7 +199,7 @@ class UserResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return $record->user_code !== auth()->id() &&
+        return $record->getAuthIdentifier() !== auth()->id() &&
             parent::canDelete($record);
     }
 }
