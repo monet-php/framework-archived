@@ -38,6 +38,8 @@ class Auth
             ];
         }
 
+        $authQuery['password'] = $credentials['password'] ?? null;
+
         $remember = $credentials['remember'] ?? false;
 
         if (! Filament::auth()->attempt($authQuery, $remember)) {
