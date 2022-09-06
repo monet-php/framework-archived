@@ -2,6 +2,7 @@
 
 namespace Monet\Framework\Admin\Providers;
 
+use Filament\Facades\Filament;
 use Filament\PluginServiceProvider;
 use Monet\Framework\Admin\Filament\Pages\SiteSettings;
 use Monet\Framework\Admin\Filament\Resources\ModuleResource;
@@ -19,4 +20,24 @@ class AdminServiceProvider extends PluginServiceProvider
         ModuleResource::class,
         ThemeResource::class,
     ];
+
+    public function packageBooted(): void
+    {
+        parent::packageBooted();
+
+        $this->app->resolving('filament', function() {
+            Filament::serving(function () {
+                Filament::registerNavigationGroups([
+                    'Users',
+                    'Appearance',
+                    'Extend',
+                    'Administration',
+                ]);
+
+                Filament::registerTheme(
+                    mix('css/monet.css', 'monet'),
+                );
+            });
+        });
+    }
 }

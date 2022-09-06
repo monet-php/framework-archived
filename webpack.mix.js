@@ -7,7 +7,6 @@ mix.options({
     }
 });
 mix.setPublicPath('dist');
-mix.sourceMaps();
 mix.version();
 
 mix.js('resources/js/monet.js', 'dist/js');
