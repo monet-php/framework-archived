@@ -96,7 +96,7 @@ class ThemeResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        return __(number_format(static::getModel()::count()).' Installed');
+        return __(number_format(static::getModel()::count()) . ' Installed');
     }
 
     public static function getWidgets(): array
@@ -107,5 +107,35 @@ class ThemeResource extends Resource
                 ThemeStats::class,
             ]
         );
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return Transformer::transform(
+            'monet.admin.themes.search.title',
+            $record->name,
+            [
+                'theme' => $record
+            ]
+        );
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return Transformer::transform(
+            'monet.admin.themes.search.details',
+            [
+                'description' => $record->description,
+                'version' => $record->version
+            ],
+            [
+                'theme' => $record
+            ]
+        );
+    }
+
+    public static function getGlobalSearchResultUrl(Model $record): string
+    {
+        return static::getUrl('index');
     }
 }

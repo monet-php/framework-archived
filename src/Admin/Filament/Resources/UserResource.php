@@ -202,4 +202,28 @@ class UserResource extends Resource
         return $record->getAuthIdentifier() !== auth()->id() &&
             parent::canDelete($record);
     }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return Transformer::transform(
+            'monet.admin.user.search.title',
+            $record->getUsernameIdentifier(),
+            [
+                'user' => $record
+            ]
+        );
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return Transformer::transform(
+            'monet.admin.user.search.details',
+            [
+                'Email address' => $record->email
+            ],
+            [
+                'user' => $record
+            ]
+        );
+    }
 }

@@ -141,4 +141,34 @@ class ModuleResource extends Resource
             ]
         );
     }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return Transformer::transform(
+            'monet.admin.modules.search.title',
+            $record->name,
+            [
+                'module' => $record
+            ]
+        );
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return Transformer::transform(
+            'monet.admin.modules.search.details',
+            [
+                'description' => $record->description,
+                'version' => $record->version
+            ],
+            [
+                'module' => $record
+            ]
+        );
+    }
+
+    public static function getGlobalSearchResultUrl(Model $record): string
+    {
+        return static::getUrl('index');
+    }
 }
