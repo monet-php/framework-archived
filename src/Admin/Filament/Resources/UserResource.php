@@ -135,6 +135,7 @@ class UserResource extends Resource
                 BadgeColumn::make('email_verified_at')
                     ->label('Verified')
                     ->sortable()
+                    ->getStateUsing(fn(User $record): bool => $record->hasVerifiedEmail())
                     ->enum([
                         true => 'Verified',
                         false => 'Unverified'
