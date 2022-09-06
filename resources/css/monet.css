@@ -1,7 +1,22 @@
 @import '../../vendor/filament/filament/resources/css/app.css';
 
+[multiple],
+[type=date],
+[type=datetime-local],
+[type=email],
+[type=month],
+[type=number],
+[type=password],
+[type=search],
+[type=tel],
+[type=text],
+[type=time],
+[type=url],
+[type=week],
+select,
+textarea,
 body {
-    @apply text-sm;
+    @apply lg:text-sm;
 }
 
 button[disabled] {
