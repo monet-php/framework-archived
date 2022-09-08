@@ -15,6 +15,10 @@ class SettingsServiceProvider extends ServiceProvider
             'monet.settings'
         );
         $this->app->singleton(SettingsManager::class);
+
+        $this->app->terminating(function () {
+            $this->app->make('monet.settings')->save();
+        });
     }
 
     public function boot(): void
