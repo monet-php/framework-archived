@@ -117,16 +117,6 @@ class ModuleResource extends Resource
         );
     }
 
-    public static function canEdit(Model $record): bool
-    {
-        return false;
-    }
-
-    public static function canCreate(): bool
-    {
-        return false;
-    }
-
     protected static function getNavigationBadge(): ?string
     {
         return __(number_format(static::getModel()::count()).' Installed');

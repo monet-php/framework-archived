@@ -2,12 +2,15 @@
 
 namespace Monet\Framework\Module\Providers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Monet\Framework\Module\Facades\Modules;
 use Monet\Framework\Module\Installer\ModuleInstaller;
 use Monet\Framework\Module\Installer\ModuleInstallerInterface;
 use Monet\Framework\Module\Loader\ModuleLoader;
 use Monet\Framework\Module\Loader\ModuleLoaderInterface;
+use Monet\Framework\Module\Models\Module;
+use Monet\Framework\Module\Policies\ThemePolicy;
 use Monet\Framework\Module\Repository\ModuleRepository;
 use Monet\Framework\Module\Repository\ModuleRepositoryInterface;
 
@@ -37,6 +40,11 @@ class ModulesServiceProvider extends ServiceProvider
         $this->app->booting(function () {
             Modules::boot();
         });
+    }
+
+    public function boot(): void
+    {
+        Gate::policy(Module::class, ThemePolicy::class);
     }
 
     public function provides(): array

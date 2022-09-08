@@ -197,12 +197,6 @@ class UserResource extends Resource
         ];
     }
 
-    public static function canDelete(Model $record): bool
-    {
-        return $record->getAuthIdentifier() !== auth()->id() &&
-            parent::canDelete($record);
-    }
-
     public static function getGloballySearchableAttributes(): array
     {
         return [User::getUsernameIdentifierName(), 'email'];

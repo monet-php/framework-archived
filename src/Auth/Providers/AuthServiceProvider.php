@@ -3,6 +3,7 @@
 namespace Monet\Framework\Auth\Providers;
 
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Monet\Framework\Auth\Http\Livewire\EmailVerification;
@@ -12,6 +13,8 @@ use Monet\Framework\Auth\Http\Livewire\PasswordRequest;
 use Monet\Framework\Auth\Http\Livewire\PasswordReset;
 use Monet\Framework\Auth\Http\Livewire\Register;
 use Monet\Framework\Auth\Http\Responses\LogoutResponse;
+use Monet\Framework\Auth\Models\User;
+use Monet\Framework\Auth\Policies\UserPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,9 +28,11 @@ class AuthServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__.'/../../../routes/auth.php');
+        $this->loadRoutesFrom(__DIR__ . '/../../../routes/auth.php');
 
         $this->registerLivewireComponents();
+
+        Gate::policy(User::class, UserPolicy::class);
     }
 
     protected function registerLivewireComponents(): void
