@@ -37,14 +37,14 @@ abstract class SettingsDriverBase
     {
         Arr::set($this->data, $key, $value);
 
-        $this->updated = [];
+        $this->updated[] = $key;
     }
 
     public function forget(string $key): void
     {
         Arr::forget($this->data, $key);
 
-        $this->deleted = [];
+        $this->deleted[] = $key;
     }
 
     abstract public function save(): void;
