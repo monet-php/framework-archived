@@ -217,9 +217,7 @@ class ListThemes extends ListRecords
                         ->hidden(fn(Theme $record): bool => !$record->enabled)
                         ->icon('heroicon-o-x')
                         ->requiresConfirmation()
-                        ->action('disableTheme')
-                ])->label('Status'),
-                ActionGroup::make([
+                        ->action('disableTheme'),
                     Action::make('publish')
                         ->label('Publish assets')
                         ->icon('heroicon-o-document-duplicate')

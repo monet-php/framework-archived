@@ -286,9 +286,7 @@ class ListModules extends ListRecords
                         ->hidden(fn(Module $record): bool => $record->disabled)
                         ->icon('heroicon-o-x')
                         ->requiresConfirmation()
-                        ->action('disableModule')
-                ])->label('Status'),
-                ActionGroup::make([
+                        ->action('disableModule'),
                     Action::make('publish')
                         ->label('Publish assets')
                         ->icon('heroicon-o-document-duplicate')
