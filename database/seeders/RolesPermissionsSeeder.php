@@ -48,6 +48,16 @@ class RolesPermissionsSeeder extends Seeder
                 'name' => 'Administrator',
                 'permissions' => [
                     'view admin',
+
+                    'create users',
+                    'update users',
+                    'delete users',
+
+                    'install modules',
+                    'delete modules',
+
+                    'install themes',
+                    'delete themes'
                 ],
             ],
         ];
