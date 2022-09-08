@@ -287,6 +287,7 @@ class ListModules extends ListRecords
                 \Filament\Pages\Actions\Action::make('install')
                     ->label('Install modules')
                     ->action('installModules')
+                    ->visible(fn() => auth()->user()->can('viewAny', Module::class))
                     ->form([
                         FileUpload::make('modules')
                             ->label('Modules')

@@ -211,6 +211,7 @@ class ListThemes extends ListRecords
                 \Filament\Pages\Actions\Action::make('install')
                     ->label('Install themes')
                     ->action('installThemes')
+                    ->visible(fn() => auth()->user()->can('viewAny', Theme::class))
                     ->form([
                         FileUpload::make('themes')
                             ->label('Themes')
