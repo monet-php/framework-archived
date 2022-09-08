@@ -9,11 +9,14 @@ use ZipArchive;
 
 abstract class ComponentInstaller
 {
-    public function publish(array $providers): void
+    public function publish(array $providers, bool $migrate = true): void
     {
         try {
             $this->publishAssets($providers);
-            Artisan::call('migrate');
+
+            if($migrate) {
+                Artisan::call('migrate');
+            }
         } catch (Exception) {
         }
     }

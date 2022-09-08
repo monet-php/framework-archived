@@ -2,15 +2,18 @@
 
 namespace Monet\Framework\Admin\Filament\Resources\ThemeResource\Pages;
 
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Monet\Framework\Admin\Filament\Resources\ThemeResource;
 use Monet\Framework\Theme\Facades\Themes;
+use Monet\Framework\Theme\Installer\ThemeInstaller;
 use Monet\Framework\Theme\Models\Theme;
 use Monet\Framework\Transformer\Facades\Transformer;
 
@@ -22,7 +25,7 @@ class ListThemes extends ListRecords
     {
         $reason = null;
 
-        if (! Themes::enable($record->name, $reason)) {
+        if (!Themes::enable($record->name, $reason)) {
             Notification::make()
                 ->danger()
                 ->title(sprintf('Theme "%s" has failed to be enabled', $record->name))
@@ -37,7 +40,7 @@ class ListThemes extends ListRecords
         Notification::make()
             ->success()
             ->title(sprintf('Theme "%s" has been successfully enabled', $record->name))
-            ->body(fn () => $record->parent !== null ? 'This includes the parent theme' : null)
+            ->body(fn() => $record->parent !== null ? 'This includes the parent theme' : null)
             ->actions([
                 \Filament\Notifications\Actions\Action::make('refresh')
                     ->button()
@@ -55,7 +58,7 @@ class ListThemes extends ListRecords
         Notification::make()
             ->success()
             ->title(sprintf('Theme "%s" has been successfully disabled', $record->name))
-            ->body(fn () => $record->parent !== null ? 'This includes the parent theme' : null)
+            ->body(fn() => $record->parent !== null ? 'This includes the parent theme' : null)
             ->actions([
                 \Filament\Notifications\Actions\Action::make('refresh')
                     ->button()
@@ -64,11 +67,32 @@ class ListThemes extends ListRecords
             ->send();
     }
 
+    public function publishTheme(Theme $record, array $data): void
+    {
+        $installer = app(ThemeInstaller::class);
+
+        if (
+            $record->parent !== null &&
+            ($parent = Themes::find($record->parent))
+        ) {
+            $installer->publish($parent->getProviders(), $data['run_migrations']);
+        }
+
+        if ($theme = Themes::find($record->name)) {
+            $installer->publish($theme->getProviders(), $data['run_migrations']);
+        }
+
+        Notification::make()
+            ->success()
+            ->title('Theme assets have been published')
+            ->send();
+    }
+
     public function deleteTheme(Theme $record): void
     {
         $reason = null;
 
-        if (! Themes::delete($record->name, $reason)) {
+        if (!Themes::delete($record->name, $reason)) {
             Notification::make()
                 ->danger()
                 ->title(sprintf('Theme "%s" has been unsuccessfully deleted', $record->name))
@@ -97,7 +121,7 @@ class ListThemes extends ListRecords
         foreach ($records as $theme) {
             $reason = null;
 
-            if (! Themes::delete($theme->name, $reason)) {
+            if (!Themes::delete($theme->name, $reason)) {
                 Notification::make()
                     ->danger()
                     ->title(
@@ -181,24 +205,37 @@ class ListThemes extends ListRecords
         return Transformer::transform(
             'monet.admin.themes.list.table.actions',
             [
-                Action::make('enable')
-                    ->label('Enable')
-                    ->hidden(fn (Theme $record): bool => $record->enabled)
-                    ->icon('heroicon-o-check')
-                    ->requiresConfirmation()
-                    ->action('enableTheme'),
-                Action::make('disable')
-                    ->label('Disable')
-                    ->hidden(fn (Theme $record): bool => ! $record->enabled)
-                    ->icon('heroicon-o-x')
-                    ->requiresConfirmation()
-                    ->action('disableTheme'),
-                Action::make('delete')
-                    ->label('Delete')
-                    ->color('danger')
-                    ->icon('heroicon-o-trash')
-                    ->requiresConfirmation()
-                    ->action('deleteTheme'),
+                ActionGroup::make([
+                    Action::make('enable')
+                        ->label('Enable')
+                        ->hidden(fn(Theme $record): bool => $record->enabled)
+                        ->icon('heroicon-o-check')
+                        ->requiresConfirmation()
+                        ->action('enableTheme'),
+                    Action::make('disable')
+                        ->label('Disable')
+                        ->hidden(fn(Theme $record): bool => !$record->enabled)
+                        ->icon('heroicon-o-x')
+                        ->requiresConfirmation()
+                        ->action('disableTheme')
+                ])->label('Status'),
+                ActionGroup::make([
+                    Action::make('publish')
+                        ->label('Publish assets')
+                        ->icon('heroicon-o-document-duplicate')
+                        ->action('publishTheme')
+                        ->form([
+                            Checkbox::make('run_migrations')
+                                ->label('Run database migrations')
+                                ->helperText('This will ensure the database is up-to date')
+                        ]),
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->color('danger')
+                        ->icon('heroicon-o-trash')
+                        ->requiresConfirmation()
+                        ->action('deleteTheme')
+                ])->label('Manage'),
             ]
         );
     }

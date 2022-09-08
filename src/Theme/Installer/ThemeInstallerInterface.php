@@ -2,9 +2,9 @@
 
 namespace Monet\Framework\Theme\Installer;
 
-interface ThemeInstallerInterface
+use Monet\Framework\Installer\Component\ComponentInstallerInterface;
+
+interface ThemeInstallerInterface extends ComponentInstallerInterface
 {
     public function install(string $path, ?string &$reason = null): ?string;
-
-    public function publish(array $providers): void;
 }
