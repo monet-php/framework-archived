@@ -13,7 +13,7 @@ class ModulePolicy
 
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo('update modules');
     }
 
     public function view(User $user, Module $module): bool
@@ -28,7 +28,7 @@ class ModulePolicy
 
     public function update(User $user, Module $module): bool
     {
-        return $user->hasPermissionTo('install modules');
+        return $user->hasPermissionTo('update modules');
     }
 
     public function delete(User $user, Module $module): bool

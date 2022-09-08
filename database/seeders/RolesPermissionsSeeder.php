@@ -53,10 +53,10 @@ class RolesPermissionsSeeder extends Seeder
                     'update users',
                     'delete users',
 
-                    'install modules',
+                    'update modules',
                     'delete modules',
 
-                    'install themes',
+                    'update themes',
                     'delete themes'
                 ],
             ],

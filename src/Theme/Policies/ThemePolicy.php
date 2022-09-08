@@ -13,7 +13,7 @@ class ThemePolicy
 
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo('update themes');
     }
 
     public function view(User $user, Theme $theme): bool
@@ -28,7 +28,7 @@ class ThemePolicy
 
     public function update(User $user, Theme $theme): bool
     {
-        return $user->hasPermissionTo('install themes');
+        return $user->hasPermissionTo('update themes');
     }
 
     public function delete(User $user, Theme $theme): bool

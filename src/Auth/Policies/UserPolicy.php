@@ -12,7 +12,7 @@ class UserPolicy
 
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo('update users');
     }
 
     public function view(User $user, User $model): bool
