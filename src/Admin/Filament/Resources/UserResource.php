@@ -125,7 +125,13 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make(User::getUsernameIdentifierName())
-                    ->label('Username')
+                    ->label(function() {
+                        if(config('monet.auth.allow_username_login')) {
+                            return 'username';
+                        }
+
+                        return 'name';
+                    })
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('email')

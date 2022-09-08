@@ -66,7 +66,13 @@ class Login extends Component implements HasForms
                     Placeholder::make('register_link')
                         ->view('monet::components.auth.register-link'),
                     TextInput::make('email')
-                        ->label('Email address or username')
+                        ->label(function () {
+                            if (config('monet.auth.allow_username_login')) {
+                                return 'Email address or username';
+                            }
+
+                            return 'Email address';
+                        })
                         ->required()
                         ->autocomplete(),
                     TextInput::make('password')

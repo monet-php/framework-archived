@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Monet\Framework\Auth\Auth;
+use Monet\Framework\Auth\Models\User;
 use Monet\Framework\Form\Builder\FormBuilder;
 use Monet\Framework\Transformer\Facades\Transformer;
 
@@ -62,8 +63,14 @@ class Register extends Component implements HasForms
                 ->schema([
                     Placeholder::make('register_link')
                         ->view('monet::components.auth.login-link'),
-                    TextInput::make('username')
-                        ->label('Username')
+                    TextInput::make(User::getUsernameIdentifierName())
+                        ->label(function () {
+                            if (config('monet.auth.allow_username_login')) {
+                                return 'Username';
+                            }
+
+                            return 'Name';
+                        })
                         ->required()
                         ->unique('users')
                         ->maxLength(30),
