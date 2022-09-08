@@ -5,12 +5,14 @@ namespace Monet\Framework\Admin\Filament\Resources;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
 use Monet\Framework\Admin\Filament\Resources\ThemeResource\Pages\ListThemes;
 use Monet\Framework\Admin\Filament\Resources\ThemeResource\Widgets\ThemeStats;
+use Monet\Framework\Auth\Models\User;
 use Monet\Framework\Theme\Models\Theme;
 use Monet\Framework\Transformer\Facades\Transformer;
 
@@ -44,8 +46,17 @@ class ThemeResource extends Resource
                                 ->sortable()
                                 ->searchable()
                                 ->wrap(),
-                            BooleanColumn::make('enabled')
-                                ->label('Enabled'),
+                            BadgeColumn::make('enabled')
+                                ->label('Status')
+                                ->sortable()
+                                ->enum([
+                                    true => 'Enabled',
+                                    false => 'Disabled'
+                                ])
+                                ->colors([
+                                    'success' => true,
+                                    'danger' => false
+                                ]),
                         ]
                     )
                 )
