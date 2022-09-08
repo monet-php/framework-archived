@@ -10,6 +10,7 @@ use Monet\Framework\Module\Installer\ModuleInstallerInterface;
 use Monet\Framework\Module\Loader\ModuleLoader;
 use Monet\Framework\Module\Loader\ModuleLoaderInterface;
 use Monet\Framework\Module\Models\Module;
+use Monet\Framework\Module\Policies\ModulePolicy;
 use Monet\Framework\Module\Policies\ThemePolicy;
 use Monet\Framework\Module\Repository\ModuleRepository;
 use Monet\Framework\Module\Repository\ModuleRepositoryInterface;
@@ -44,7 +45,7 @@ class ModulesServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Gate::policy(Module::class, ThemePolicy::class);
+        Gate::policy(Module::class, ModulePolicy::class);
     }
 
     public function provides(): array
