@@ -15,6 +15,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Monet\Framework\Auth\Auth;
+use Monet\Framework\Auth\Models\User;
 use Monet\Framework\Form\Builder\FormBuilder;
 use Monet\Framework\Transformer\Facades\Transformer;
 
@@ -75,7 +76,7 @@ class Login extends Component implements HasForms
                         })
                         ->required()
                         ->autocomplete(),
-                    TextInput::make('password')
+                    TextInput::make(User::getAuthPasswordName())
                         ->label('Password')
                         ->password()
                         ->required(),

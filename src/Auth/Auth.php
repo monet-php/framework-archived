@@ -4,6 +4,7 @@ namespace Monet\Framework\Auth;
 
 use Filament\Facades\Filament;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Monet\Framework\Auth\Models\User;
 use Monet\Framework\Support\Traits\Macroable;
@@ -39,7 +40,8 @@ class Auth
             ];
         }
 
-        $authQuery['password'] = $credentials['password'] ?? null;
+        $passwordName = User::getAuthPasswordName();
+        $authQuery[$passwordName] = $credentials[$passwordName] ?? null;
 
         $remember = $credentials['remember'] ?? false;
 
@@ -64,8 +66,13 @@ class Auth
         bool  $silently = false
     ): User
     {
+        $passwordName = User::getAuthPasswordName();
+
         $user = User::query()
-            ->create($attributes);
+            ->create([
+                ...$attributes,
+                $passwordName => Hash::make($attributes[$passwordName] ?? null)
+            ]);
 
         $user->assignRole(Role::findById(1));
 

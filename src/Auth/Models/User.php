@@ -5,6 +5,7 @@ namespace Monet\Framework\Auth\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Monet\Framework\Auth\Contracts\ShouldVerifyEmail;
 use Monet\Framework\Support\Traits\Macroable;
 use Monet\Framework\Transformer\Facades\Transformer;
@@ -14,6 +15,7 @@ class User extends Authenticatable implements ShouldVerifyEmail, FilamentUser, H
 {
     use Macroable;
     use HasRoles;
+    use Notifiable;
 
     public function __construct(array $attributes = [])
     {
@@ -63,7 +65,17 @@ class User extends Authenticatable implements ShouldVerifyEmail, FilamentUser, H
 
     public function getUsernameIdentifier(): string
     {
-        return $this->{$this->getUsernameIdentifierName()};
+        return $this->{static::getUsernameIdentifierName()};
+    }
+
+    public static function getAuthPasswordName(): string
+    {
+        return 'password';
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->{static::getAuthPasswordName()};
     }
 
     public function shouldVerifyEmail(): bool

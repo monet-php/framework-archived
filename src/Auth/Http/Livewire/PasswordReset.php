@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Monet\Framework\Auth\Models\User;
 use Monet\Framework\Form\Builder\FormBuilder;
 use Monet\Framework\Transformer\Facades\Transformer;
 
@@ -69,7 +70,7 @@ class PasswordReset extends Component implements HasForms
             ],
             function ($user) use ($data) {
                 $user->forceFill([
-                    'password' => Hash::make($data['password']),
+                    User::getAuthPasswordName() => Hash::make($data[User::getAuthPasswordName()]),
                     'remember_token' => Str::random(60),
                 ])->save();
 
@@ -101,12 +102,12 @@ class PasswordReset extends Component implements HasForms
                     Placeholder::make('email')
                         ->label('Email address')
                         ->content($this->email),
-                    TextInput::make('password')
+                    TextInput::make(User::getAuthPasswordName())
                         ->label('Password')
                         ->password()
                         ->required()
                         ->rules('confirmed'),
-                    TextInput::make('password_confirmation')
+                    TextInput::make(User::getAuthPasswordName() . '_confirmation')
                         ->label('Confirm password')
                         ->password()
                         ->required(),

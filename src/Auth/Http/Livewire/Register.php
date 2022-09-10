@@ -81,12 +81,12 @@ class Register extends Component implements HasForms
                         ->autocomplete()
                         ->unique('users')
                         ->maxLength(255),
-                    TextInput::make('password')
+                    TextInput::make(User::getAuthPasswordName())
                         ->label('Password')
                         ->password()
                         ->required()
                         ->rules('confirmed'),
-                    TextInput::make('password_confirmation')
+                    TextInput::make(User::getAuthPasswordName() . '_confirmation')
                         ->label('Confirm password')
                         ->password()
                         ->required(),
