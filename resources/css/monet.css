@@ -100,3 +100,7 @@ select,
 .filament-tables-icon-button-action {
     @apply -mx-1;
 }
+
+.filament-dropdown-panel {
+    @apply overflow-hidden;
+}
