@@ -29,16 +29,18 @@
         @livewireScripts
         @stack('scripts')
     </head>
-    <body class="text-sm bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-900">
+    <body class="bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-900">
         <div
-            class="flex items-center justify-center min-h-screen bg-gray-100 text-gray-900 py-12 dark:bg-gray-900 dark:text-white">
+            class="monet-auth-page flex items-center justify-center min-h-screen bg-gray-100 text-gray-900 py-12 dark:bg-gray-900 dark:text-white"
+        >
             <div class="w-screen px-6 -mt-16 space-y-8 md:mt-0 md:px-2 max-w-md">
                 <div
-                    class="p-8 space-y-4 bg-white/50 backdrop-blur-xl border border-gray-200 shadow-2xl rounded-2xl relative dark:bg-gray-900/50 dark:border-gray-700">
+                    class="p-8 space-y-4 bg-white/50 backdrop-blur-xl border border-gray-200 shadow-2xl rounded-2xl relative dark:bg-gray-900/50 dark:border-gray-700"
+                >
                     <div class="flex justify-center w-full">
-                        <h2 class="text-white font-bold text-2xl">
-                            Monet
-                        </h2>
+                        <div class="text-xl font-bold tracking-tight dark:text-white">
+                            {{config('app.name')}}
+                        </div>
                     </div>
 
                     <h2 class="text-2xl font-bold tracking-tight text-center">
