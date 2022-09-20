@@ -68,19 +68,19 @@ class ModuleResource extends Resource
                         ]
                     )
                 )
-                ->filters(
-                    Transformer::transform(
-                        'monet.admin.modules.table.filters',
-                        [
-                            MultiSelectFilter::make('status')
-                                ->label('Status')
-                                ->options([
-                                    'enabled' => 'Enabled',
-                                    'disabled' => 'Disabled',
-                                ]),
-                        ]
-                    )
-                )
+//                ->filters(
+//                    Transformer::transform(
+//                        'monet.admin.modules.table.filters',
+//                        [
+//                            MultiSelectFilter::make('status')
+//                                ->label('Status')
+//                                ->options([
+//                                    'enabled' => 'Enabled',
+//                                    'disabled' => 'Disabled',
+//                                ]),
+//                        ]
+//                    )
+//                )
                 ->bulkActions(
                     Transformer::transform(
                         'monet.admin.modules.table.bulkActions',
@@ -164,6 +164,6 @@ class ModuleResource extends Resource
 
     public static function getGlobalSearchResultUrl(Model $record): string
     {
-        return static::getUrl('index');
+        return static::getUrl();
     }
 }
