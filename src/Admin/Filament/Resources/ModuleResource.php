@@ -2,13 +2,13 @@
 
 namespace Monet\Framework\Admin\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Notifications;
+use Filament\Pages;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\TagsColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\MultiSelectFilter;
+use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Monet\Framework\Admin\Filament\Resources\ModuleResource\Pages\ListModules;
 use Monet\Framework\Admin\Filament\Resources\ModuleResource\Widgets\ModuleStats;
@@ -36,25 +36,25 @@ class ModuleResource extends Resource
                     Transformer::transform(
                         'monet.admin.modules.table.columns',
                         [
-                            TextColumn::make('name')
+                            Tables\Columns\TextColumn::make('name')
                                 ->label('Name')
                                 ->sortable()
                                 ->searchable(),
-                            TagsColumn::make('version')
+                            Tables\Columns\TagsColumn::make('version')
                                 ->label('Version')
                                 ->sortable()
                                 ->searchable()
                                 ->separator(),
-                            TextColumn::make('description')
+                            Tables\Columns\TextColumn::make('description')
                                 ->label('Description')
                                 ->sortable()
                                 ->searchable()
                                 ->wrap(),
-                            BadgeColumn::make('status')
+                            Tables\Columns\BadgeColumn::make('status')
                                 ->label('Status')
                                 ->sortable()
                                 ->searchable()
-                                ->formatStateUsing(fn (string $state): string => __(ucfirst($state)))
+                                ->formatStateUsing(fn(string $state): string => __(ucfirst($state)))
                                 ->icons([
                                     'heroicon-o-minus-sm',
                                     'heroicon-o-x' => 'disabled',
@@ -68,34 +68,34 @@ class ModuleResource extends Resource
                         ]
                     )
                 )
-//                ->filters(
-//                    Transformer::transform(
-//                        'monet.admin.modules.table.filters',
-//                        [
-//                            MultiSelectFilter::make('status')
-//                                ->label('Status')
-//                                ->options([
-//                                    'enabled' => 'Enabled',
-//                                    'disabled' => 'Disabled',
-//                                ]),
-//                        ]
-//                    )
-//                )
+                ->filters(
+                    Transformer::transform(
+                        'monet.admin.modules.table.filters',
+                        [
+                            Tables\Filters\SelectFilter::make('status')
+                                ->label('Status')
+                                ->options([
+                                    'enabled' => 'Enabled',
+                                    'disabled' => 'Disabled',
+                                ]),
+                        ]
+                    )
+                )
                 ->bulkActions(
                     Transformer::transform(
                         'monet.admin.modules.table.bulkActions',
                         [
-                            BulkAction::make('enable')
+                            Tables\Actions\BulkAction::make('enable')
                                 ->label('Enable selected')
                                 ->icon('heroicon-o-check')
                                 ->requiresConfirmation()
                                 ->action('enableBulk'),
-                            BulkAction::make('disable')
+                            Tables\Actions\BulkAction::make('disable')
                                 ->label('Disable selected')
                                 ->icon('heroicon-o-x')
                                 ->requiresConfirmation()
                                 ->action('disableBulk'),
-                            BulkAction::make('delete')
+                            Tables\Actions\BulkAction::make('delete')
                                 ->label('Delete selected')
                                 ->color('danger')
                                 ->icon('heroicon-o-trash')
@@ -103,6 +103,41 @@ class ModuleResource extends Resource
                                 ->action('deleteBulk'),
                         ]
                     )
+                )
+                ->actions(
+                    Transformer::transform(
+                        'monet.admin.modules.list.table.actions',
+                        [
+                            Tables\Actions\ActionGroup::make([
+                                Tables\Actions\Action::make('enable')
+                                    ->label('Enable')
+                                    ->hidden(fn(Module $record): bool => $record->enabled)
+                                    ->icon('heroicon-o-check')
+                                    ->requiresConfirmation()
+                                    ->action('enableModule'),
+                                Tables\Actions\Action::make('disable')
+                                    ->label('Disable')
+                                    ->hidden(fn(Module $record): bool => $record->disabled)
+                                    ->icon('heroicon-o-x')
+                                    ->requiresConfirmation()
+                                    ->action('disableModule'),
+                                Tables\Actions\Action::make('publish')
+                                    ->label('Publish assets')
+                                    ->icon('heroicon-o-document-duplicate')
+                                    ->action('publishModule')
+                                    ->form([
+                                        Forms\Components\Checkbox::make('run_migrations')
+                                            ->label('Run database migrations')
+                                            ->helperText('This will ensure the database is up-to date')
+                                    ]),
+                                Tables\Actions\Action::make('delete')
+                                    ->label('Delete')
+                                    ->color('danger')
+                                    ->icon('heroicon-o-trash')
+                                    ->requiresConfirmation()
+                                    ->action('deleteModule')
+                            ])->label('Manage'),
+                        ])
                 )
         );
     }
@@ -119,7 +154,7 @@ class ModuleResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        return __(number_format(static::getModel()::count()).' Installed');
+        return __(number_format(static::getModel()::count()) . ' Installed');
     }
 
     public static function getWidgets(): array

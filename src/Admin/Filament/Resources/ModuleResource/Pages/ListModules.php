@@ -2,12 +2,11 @@
 
 namespace Monet\Framework\Admin\Filament\Resources\ModuleResource\Pages;
 
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\FileUpload;
-use Filament\Notifications\Notification;
+use Filament\Forms;
+use Filament\Notifications;
+use Filament\Pages;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -26,7 +25,7 @@ class ListModules extends ListRecords
         $reason = null;
 
         if (!Modules::enable($record->name, $reason)) {
-            Notification::make()
+            Notifications\Notification::make()
                 ->danger()
                 ->title(sprintf('Module "%s" has failed to be enabled', $record->name))
                 ->body($reason)
@@ -37,12 +36,12 @@ class ListModules extends ListRecords
 
         $record->forceFill(['status' => 'enabled'])->save();
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title(sprintf('Module "%s" has been successfully enabled', $record->name))
             ->body('This includes any dependency modules')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('refresh')
+                Notifications\Actions\Action::make('refresh')
                     ->button()
                     ->url(route('filament.resources.extend/modules.index')),
             ])
@@ -55,12 +54,12 @@ class ListModules extends ListRecords
 
         $record->forceFill(['status' => 'disabled'])->save();
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title(sprintf('Module "%s" has been successfully disabled', $record->name))
             ->body('This includes any dependent modules')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('refresh')
+                Notifications\Actions\Action::make('refresh')
                     ->button()
                     ->url(route('filament.resources.extend/modules.index')),
             ])
@@ -75,7 +74,7 @@ class ListModules extends ListRecords
             $installer->publish($module->getProviders(), $data['run_migrations']);
         }
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title('Module assets have been published')
             ->send();
@@ -86,7 +85,7 @@ class ListModules extends ListRecords
         $reason = null;
 
         if (!Modules::delete($record->name, $reason)) {
-            Notification::make()
+            Notifications\Notification::make()
                 ->danger()
                 ->title(sprintf('Module "%s" has been unsuccessfully deleted', $record->name))
                 ->body($reason)
@@ -97,11 +96,11 @@ class ListModules extends ListRecords
 
         $record->delete();
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title(sprintf('Module "%s" has been successfully deleted', $record->name))
             ->actions([
-                \Filament\Notifications\Actions\Action::make('refresh')
+                Notifications\Actions\Action::make('refresh')
                     ->button()
                     ->url(route('filament.resources.extend/modules.index')),
             ])
@@ -119,7 +118,7 @@ class ListModules extends ListRecords
             $reason = null;
 
             if (!Modules::enable($module->name, $reason)) {
-                Notification::make()
+                Notifications\Notification::make()
                     ->danger()
                     ->title(sprintf('Module "%s" has failed to be enabled', $module->name))
                     ->body($reason)
@@ -133,7 +132,7 @@ class ListModules extends ListRecords
             $count++;
         }
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title(
                 sprintf(
@@ -144,7 +143,7 @@ class ListModules extends ListRecords
             )
             ->body('This includes any dependency modules')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('refresh')
+                Notifications\Actions\Action::make('refresh')
                     ->button()
                     ->url(route('filament.resources.extend/modules.index')),
             ])
@@ -165,7 +164,7 @@ class ListModules extends ListRecords
             $count++;
         }
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title(
                 sprintf(
@@ -176,7 +175,7 @@ class ListModules extends ListRecords
             )
             ->body('This includes any dependency modules')
             ->actions([
-                \Filament\Notifications\Actions\Action::make('refresh')
+                Notifications\Actions\Action::make('refresh')
                     ->button()
                     ->url(route('filament.resources.extend/modules.index')),
             ])
@@ -190,7 +189,7 @@ class ListModules extends ListRecords
             $reason = null;
 
             if (!Modules::delete($module->name, $reason)) {
-                Notification::make()
+                Notifications\Notification::make()
                     ->danger()
                     ->title(
                         sprintf(
@@ -209,7 +208,7 @@ class ListModules extends ListRecords
             $count++;
         }
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title(
                 sprintf(
@@ -219,7 +218,7 @@ class ListModules extends ListRecords
                 )
             )
             ->actions([
-                \Filament\Notifications\Actions\Action::make('refresh')
+                Notifications\Actions\Action::make('refresh')
                     ->button()
                     ->url(route('filament.resources.extend/modules.index')),
             ])
@@ -237,7 +236,7 @@ class ListModules extends ListRecords
             if (Modules::install($file, $reason)) {
                 $count++;
             } else {
-                Notification::make()
+                Notifications\Notification::make()
                     ->danger()
                     ->title(
                         sprintf(
@@ -252,7 +251,7 @@ class ListModules extends ListRecords
             Storage::disk('local')->delete($path);
         }
 
-        Notification::make()
+        Notifications\Notification::make()
             ->success()
             ->title(
                 sprintf(
@@ -262,49 +261,11 @@ class ListModules extends ListRecords
                 )
             )
             ->actions([
-                \Filament\Notifications\Actions\Action::make('refresh')
+                Notifications\Actions\Action::make('refresh')
                     ->button()
                     ->url(route('filament.resources.extend/modules.index')),
             ])
             ->send();
-    }
-
-    protected function getTableActions(): array
-    {
-        return Transformer::transform(
-            'monet.admin.modules.list.table.actions',
-            [
-                ActionGroup::make([
-                    Action::make('enable')
-                        ->label('Enable')
-                        ->hidden(fn(Module $record): bool => $record->enabled)
-                        ->icon('heroicon-o-check')
-                        ->requiresConfirmation()
-                        ->action('enableModule'),
-                    Action::make('disable')
-                        ->label('Disable')
-                        ->hidden(fn(Module $record): bool => $record->disabled)
-                        ->icon('heroicon-o-x')
-                        ->requiresConfirmation()
-                        ->action('disableModule'),
-                    Action::make('publish')
-                        ->label('Publish assets')
-                        ->icon('heroicon-o-document-duplicate')
-                        ->action('publishModule')
-                        ->form([
-                            Checkbox::make('run_migrations')
-                                ->label('Run database migrations')
-                                ->helperText('This will ensure the database is up-to date')
-                        ]),
-                    Action::make('delete')
-                        ->label('Delete')
-                        ->color('danger')
-                        ->icon('heroicon-o-trash')
-                        ->requiresConfirmation()
-                        ->action('deleteModule')
-                ])->label('Manage'),
-            ]
-        );
     }
 
     protected function getActions(): array
@@ -312,12 +273,11 @@ class ListModules extends ListRecords
         return Transformer::transform(
             'monet.admin.modules.list.page.actions',
             [
-                \Filament\Pages\Actions\Action::make('install')
+                Pages\Actions\Action::make('install')
                     ->label('Install modules')
                     ->action('installModules')
-                    ->visible(fn() => auth()->user()->can('viewAny', Module::class))
                     ->form([
-                        FileUpload::make('modules')
+                        Forms\Components\FileUpload::make('modules')
                             ->label('Modules')
                             ->disableLabel()
                             ->disk('local')
