@@ -77,7 +77,8 @@ class UserResource extends Resource
                                 ) {
                                     $record->assignRole(Role::findById(2));
                                 }
-                            }),
+                            })
+                            ->hiddenOn('create'),
                     ])
                     ->columns([
                         'sm' => 2,
@@ -125,8 +126,8 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make(User::getUsernameIdentifierName())
-                    ->label(function() {
-                        if(config('monet.auth.allow_username_login')) {
+                    ->label(function () {
+                        if (config('monet.auth.allow_username_login')) {
                             return 'username';
                         }
 
