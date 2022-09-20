@@ -77,6 +77,10 @@ class UserResource extends Resource
                                 ) {
                                     $record->assignRole(Role::findById(2));
                                 }
+
+                                if (empty($record->roles)) {
+                                    $record->assignRole(Role::findById(1));
+                                }
                             })
                             ->hiddenOn('create'),
                     ])
