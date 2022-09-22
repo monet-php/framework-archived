@@ -16,7 +16,7 @@ class ModuleLoader implements ModuleLoaderInterface
         return Module::make(
             $json->get('name'),
             $json->get('description'),
-            $json->get('version'),
+            $json->get('version', 'Unknown'),
             $path,
             'disabled',
             $json->get('extra.monet.module.dependencies', []),
