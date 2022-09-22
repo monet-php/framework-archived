@@ -15,17 +15,18 @@ use Monet\Framework\Admin\Filament\Resources\ThemeResource;
 use Monet\Framework\Theme\Facades\Themes;
 use Monet\Framework\Theme\Installer\ThemeInstaller;
 use Monet\Framework\Theme\Models\Theme;
+use Monet\Framework\Theme\Repository\ThemeRepositoryInterface;
 use Monet\Framework\Transformer\Facades\Transformer;
 
 class ListThemes extends ListRecords
 {
     protected static string $resource = ThemeResource::class;
 
-    public function enableTheme(Theme $record): void
+    public function enableTheme(ThemeRepositoryInterface $themes, Theme $record): void
     {
         $reason = null;
 
-        if (!Themes::enable($record->name, $reason)) {
+        if (!$themes->enable($record->name, $reason)) {
             Notification::make()
                 ->danger()
                 ->title(sprintf('Theme "%s" has failed to be enabled', $record->name))
@@ -49,9 +50,9 @@ class ListThemes extends ListRecords
             ->send();
     }
 
-    public function disableTheme(Theme $record): void
+    public function disableTheme(ThemeRepositoryInterface $themes, Theme $record): void
     {
-        Themes::disable();
+        $themes->disable();
 
         $record->forceFill(['enabled' => false])->save();
 
@@ -67,18 +68,18 @@ class ListThemes extends ListRecords
             ->send();
     }
 
-    public function publishTheme(Theme $record, array $data): void
+    public function publishTheme(ThemeRepositoryInterface $themes, Theme $record, array $data): void
     {
         $installer = app(ThemeInstaller::class);
 
         if (
             $record->parent !== null &&
-            ($parent = Themes::find($record->parent))
+            ($parent = $themes->find($record->parent))
         ) {
             $installer->publish($parent->getProviders(), $data['run_migrations']);
         }
 
-        if ($theme = Themes::find($record->name)) {
+        if ($theme = $themes->find($record->name)) {
             $installer->publish($theme->getProviders(), $data['run_migrations']);
         }
 
@@ -88,11 +89,11 @@ class ListThemes extends ListRecords
             ->send();
     }
 
-    public function deleteTheme(Theme $record): void
+    public function deleteTheme(ThemeRepositoryInterface $themes, Theme $record): void
     {
         $reason = null;
 
-        if (!Themes::delete($record->name, $reason)) {
+        if (!$themes->delete($record->name, $reason)) {
             Notification::make()
                 ->danger()
                 ->title(sprintf('Theme "%s" has been unsuccessfully deleted', $record->name))
@@ -115,13 +116,13 @@ class ListThemes extends ListRecords
             ->send();
     }
 
-    public function deleteBulk(Collection $records): void
+    public function deleteBulk(ThemeRepositoryInterface $themes, Collection $records): void
     {
         $count = 0;
         foreach ($records as $theme) {
             $reason = null;
 
-            if (!Themes::delete($theme->name, $reason)) {
+            if (!$themes->delete($theme->name, $reason)) {
                 Notification::make()
                     ->danger()
                     ->title(
@@ -157,17 +158,13 @@ class ListThemes extends ListRecords
             ->send();
     }
 
-    public function installThemes(array $data): void
+    public function installThemes(ThemeRepositoryInterface $themes, array $data): void
     {
         $count = 0;
         foreach ($data['themes'] as $path) {
             $file = Storage::disk('local')->path($path);
 
-            $reason = null;
-
-            if (Themes::install($file, $reason)) {
-                $count++;
-            } else {
+            if (!$themes->install($file, $reason)) {
                 Notification::make()
                     ->danger()
                     ->title(
@@ -178,7 +175,11 @@ class ListThemes extends ListRecords
                     )
                     ->body($reason)
                     ->send();
+
+                continue;
             }
+
+            $count++;
 
             Storage::disk('local')->delete($path);
         }

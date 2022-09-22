@@ -14,17 +14,18 @@ use Monet\Framework\Admin\Filament\Resources\ModuleResource;
 use Monet\Framework\Module\Facades\Modules;
 use Monet\Framework\Module\Installer\ModuleInstaller;
 use Monet\Framework\Module\Models\Module;
+use Monet\Framework\Module\Repository\ModuleRepositoryInterface;
 use Monet\Framework\Transformer\Facades\Transformer;
 
 class ListModules extends ListRecords
 {
     protected static string $resource = ModuleResource::class;
 
-    public function enableModule(Module $record): void
+    public function enableModule(ModuleRepositoryInterface $modules, Module $record): void
     {
         $reason = null;
 
-        if (!Modules::enable($record->name, $reason)) {
+        if (!$modules->enable($record->name, $reason)) {
             Notifications\Notification::make()
                 ->danger()
                 ->title(sprintf('Module "%s" has failed to be enabled', $record->name))
@@ -48,9 +49,9 @@ class ListModules extends ListRecords
             ->send();
     }
 
-    public function disableModule(Module $record): void
+    public function disableModule(ModuleRepositoryInterface $modules, Module $record): void
     {
-        Modules::disable($record->name);
+        $modules->disable($record->name);
 
         $record->forceFill(['status' => 'disabled'])->save();
 
@@ -66,11 +67,11 @@ class ListModules extends ListRecords
             ->send();
     }
 
-    public function publishModule(Module $record, array $data): void
+    public function publishModule(ModuleRepositoryInterface $modules, Module $record, array $data): void
     {
         $installer = app(ModuleInstaller::class);
 
-        if ($module = Modules::find($record->name)) {
+        if ($module = $modules->find($record->name)) {
             $installer->publish($module->getProviders(), $data['run_migrations']);
         }
 
@@ -80,11 +81,11 @@ class ListModules extends ListRecords
             ->send();
     }
 
-    public function deleteModule(Module $record): void
+    public function deleteModule(ModuleRepositoryInterface $modules, Module $record): void
     {
         $reason = null;
 
-        if (!Modules::delete($record->name, $reason)) {
+        if (!$modules->delete($record->name, $reason)) {
             Notifications\Notification::make()
                 ->danger()
                 ->title(sprintf('Module "%s" has been unsuccessfully deleted', $record->name))
@@ -107,7 +108,7 @@ class ListModules extends ListRecords
             ->send();
     }
 
-    public function enableBulk(Collection $records): void
+    public function enableBulk(ModuleRepositoryInterface $modules, Collection $records): void
     {
         $count = 0;
         foreach ($records as $module) {
@@ -117,7 +118,7 @@ class ListModules extends ListRecords
 
             $reason = null;
 
-            if (!Modules::enable($module->name, $reason)) {
+            if (!$modules->enable($module->name, $reason)) {
                 Notifications\Notification::make()
                     ->danger()
                     ->title(sprintf('Module "%s" has failed to be enabled', $module->name))
@@ -150,7 +151,7 @@ class ListModules extends ListRecords
             ->send();
     }
 
-    public function disableBulk(Collection $records): void
+    public function disableBulk(ModuleRepositoryInterface $modules, Collection $records): void
     {
         $count = 0;
         foreach ($records as $module) {
@@ -158,7 +159,7 @@ class ListModules extends ListRecords
                 continue;
             }
 
-            Modules::disable($module->name);
+            $modules->disable($module->name);
             $module->forceFill(['status' => 'disabled'])->save();
 
             $count++;
@@ -182,13 +183,13 @@ class ListModules extends ListRecords
             ->send();
     }
 
-    public function deleteBulk(Collection $records): void
+    public function deleteBulk(ModuleRepositoryInterface $modules, Collection $records): void
     {
         $count = 0;
         foreach ($records as $module) {
             $reason = null;
 
-            if (!Modules::delete($module->name, $reason)) {
+            if (!$modules->delete($module->name, $reason)) {
                 Notifications\Notification::make()
                     ->danger()
                     ->title(
@@ -225,17 +226,13 @@ class ListModules extends ListRecords
             ->send();
     }
 
-    public function installModules(array $data): void
+    public function installModules(ModuleRepositoryInterface $modules, array $data): void
     {
         $count = 0;
         foreach ($data['modules'] as $path) {
             $file = Storage::disk('local')->path($path);
 
-            $reason = null;
-
-            if (Modules::install($file, $reason)) {
-                $count++;
-            } else {
+            if (!$modules->install($file, $reason)) {
                 Notifications\Notification::make()
                     ->danger()
                     ->title(
@@ -246,7 +243,11 @@ class ListModules extends ListRecords
                     )
                     ->body($reason)
                     ->send();
+
+                continue;
             }
+
+            $count++;
 
             Storage::disk('local')->delete($path);
         }
