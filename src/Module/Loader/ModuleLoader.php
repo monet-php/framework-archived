@@ -29,7 +29,7 @@ class ModuleLoader implements ModuleLoaderInterface
         return Module::make(
             $array['name'],
             $array['description'],
-            $array['version'],
+            $array['version'] ?? 'Unknown',
             $array['path'],
             $array['status'],
             $array['dependencies'],
